@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
-# Install script for Hermes Shared Memory Skill
+# Install script for Hermes Shared Memory Skill (Linux / WSL)
 set -euo pipefail
 
 SKILL_DIR="$HOME/.hermes/skills/shared-memory"
 SCRIPT_DIR="$SKILL_DIR/scripts"
 DB_DIR="$HOME/.hermes/shared-memory"
 
-echo "=== Hermes Shared Memory Skill - Install ==="
+echo "=== Hermes Shared Memory Skill - Install (Linux/WSL) ==="
 echo
 
 # Check for python3
 if ! command -v python3 &>/dev/null; then
     echo "ERROR: python3 is required but not found."
-    echo "Install Python 3 and try again."
     exit 1
 fi
 
@@ -45,5 +44,9 @@ echo
 echo "Verify with:"
 echo "  python3 $SCRIPT_DIR/shared_memory.py stats"
 echo
-echo "Add SHARED_MEMORY_DB env var to customize DB location:"
-echo "  export SHARED_MEMORY_DB=/path/to/custom/memory.db"
+echo "--- Multi-agent setup (Windows + WSL) ---"
+echo "To share memory between Windows and WSL, set SHARED_MEMORY_DB"
+echo "to a path accessible from both systems, e.g.:"
+echo "  export SHARED_MEMORY_DB=/mnt/c/Users/YOUR_USER/hermes-shared-memory/memory.db"
+echo
+echo "Add this to your ~/.bashrc or ~/.zshrc to make it permanent."
