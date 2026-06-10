@@ -60,6 +60,66 @@ python3 ~/.hermes/skills/shared-memory/scripts/shared_memory.py stats
 
 ---
 
+## 🖥️ Multi-Agente: Windows + WSL
+
+Si tienes Hermes corriendo en **Windows** y en **WSL** (como es el caso de Axistechs), ambos pueden compartir la misma memoria apuntando a un mismo archivo SQLite en el disco de Windows.
+
+### Como funciona
+
+```
+Hermes WSL (Terminal) ──┐
+                         ├──► C:\Users\edgar\hermes-shared-memory\memory.db
+Hermes Windows ──────────┘
+```
+
+Ambos agentes leen y escriben en el **mismo archivo**. SQLite con WAL mode maneja la concurrencia de forma segura.
+
+### Setup
+
+**1. Crear carpeta compartida en Windows:**
+```cmd
+mkdir C:\Users\edgar\hermes-shared-memory
+```
+
+**2. En Windows — Instalar la skill y configurar el path:**
+```cmd
+git clone https://github.com/axistechs/hermes-shared-memory.git
+cd hermes-shared-memory
+install.bat
+setx SHARED_MEMORY_DB C:\Users\edgar\hermes-shared-memory\memory.db
+```
+
+**3. En WSL — Instalar la skill y apuntar al mismo archivo:**
+```bash
+git clone https://github.com/axistechs/hermes-shared-memory.git
+cd hermes-shared-memory
+bash install.sh
+
+# Apuntar la BD al path de Windows (accesible desde WSL via /mnt/c/)
+echo 'export SHARED_MEMORY_DB=/mnt/c/Users/edgar/hermes-shared-memory/memory.db' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**4. Verificar que ambos ven lo mismo:**
+
+En Windows:
+```cmd
+python %USERPROFILE%\.hermes\skills\shared-memory\scripts\shared_memory.py stats
+```
+
+En WSL:
+```bash
+python3 ~/.hermes/skills/shared-memory/scripts/shared_memory.py stats
+```
+
+Ambos deberían mostrar las mismas estadisticas. ¡Magia! ✨
+
+### Nota importante
+
+> El path `/mnt/c/` es como WSL ve el disco C de Windows. Asegúrate de que el path coincida con tu usuario de Windows.
+
+---
+
 ## 📖 Uso
 
 ### Agregar memoria
@@ -146,7 +206,8 @@ hermes-shared-memory/
 ├── SKILL.md                  # Documentacion completa e instrucciones para el agente
 ├── README.md                 # Este archivo (si, el que estas leyendo)
 ├── LICENSE                   # Licencia MIT
-├── install.sh                # Instalador automatico
+├── install.sh                # Instalador automatico (Linux/WSL)
+├── install.bat               # Instalador automatico (Windows)
 ├── .gitignore                # Excluye memory.db y archivos locales
 └── scripts/
     └── shared_memory.py      # El motor: backend SQLite con WAL mode
