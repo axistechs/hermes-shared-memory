@@ -1,0 +1,20 @@
+# Base de datos SQLite - contiene datos locales del usuario
+memory.db
+*.db
+
+# Archivos temporales
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno local
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
